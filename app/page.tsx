@@ -1,95 +1,84 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
 
-export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+import { useState } from "react";
+import styles from "./page.module.scss";
+import { splitExpensesEqually, organizePayments, type Expense, type Debt } from "./utils/helpers";
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+export default function Home(): JSX.Element {
+    const [expenses, setExpenses] = useState<Expense[]>([]);
+    const [payments, setPayments] = useState<Debt[] | null>(null);
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+    function handleFormSubmit(e: React.FormEvent<HTMLFormElement>): void {
+        e.preventDefault();
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+        const formData = new FormData(e.currentTarget);
+        const expense = Object.fromEntries(formData) as unknown as Expense;
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
+        if (expense.person && !isNaN(expense.amount) && expense.amount > 0) {
+            setExpenses((prev) => [...prev, expense]);
+        } else {
+            alert("Please enter valid person and expense amount.");
+        }
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+        calculate();
+    }
+
+    function calculate(): void {
+        if (!expenses.length) {
+            alert("Please add at least one person and their expenses.");
+            return;
+        }
+
+        const paymentDetails = splitExpensesEqually(expenses);
+
+        setPayments(organizePayments(paymentDetails));
+    }
+
+    return (
+        <main className={styles["container"]}>
+            <h1>Expense Splitter</h1>
+
+            <form className={styles["form"]} onSubmit={handleFormSubmit}>
+                <div className={styles["field"]}>
+                    <label htmlFor="person">Person</label>
+                    <input type="text" name="person" />
+                </div>
+
+                <div className={styles["field"]}>
+                    <label htmlFor="amount">Amount</label>
+                    <input type="number" name="amount" />
+                </div>
+
+                <button className={styles["add-btn"]}>Add</button>
+            </form>
+
+            {!!expenses.length && (
+                <>
+                    <ul className={styles["list"]}>
+                        {expenses.map((expense) => (
+                            <li key={`${expense.person}_${expense.amount}`}>
+                                {expense.person}: {expense.amount}
+                            </li>
+                        ))}
+                    </ul>
+
+                    <p>
+                        <b>Total: {expenses.reduce((acc, expense) => (acc += Number(expense.amount)), 0)}</b>
+                    </p>
+
+                    {payments && (
+                        <ul className={styles["list"]}>
+                            {payments.length
+                                ? payments.map((payment) => (
+                                      <li key={`${payment.person}_${payment.amount}`}>
+                                          {`${payment.person} pays ${payment.amount} to ${payment.creditor}`}
+                                      </li>
+                                  ))
+                                : "No payments needed, everyone's expenses are equal"}
+                        </ul>
+                    )}
+                </>
+            )}
+        </main>
+    );
 }
