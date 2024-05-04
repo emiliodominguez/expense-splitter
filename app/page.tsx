@@ -72,13 +72,14 @@ export default function Home(): JSX.Element {
                     <ul className={styles["list"]}>
                         {expenses.map((expense) => (
                             <li key={`${expense.person}_${expense.amount}`}>
-                                {expense.person}: {priceFormatter.format(expense.amount || 0)}
+                                {expense.person}: <b>${priceFormatter.format(expense.amount || 0)}</b>
+                                {!expense.amount && <span>🐀</span>}
                             </li>
                         ))}
                     </ul>
 
                     <p>
-                        <b>Total: {priceFormatter.format(expenses.reduce((acc, expense) => (acc += expense.amount), 0))}</b>
+                        <b>Total: ${priceFormatter.format(expenses.reduce((acc, expense) => (acc += expense.amount), 0))}</b>
                     </p>
 
                     {debts && (
@@ -86,7 +87,9 @@ export default function Home(): JSX.Element {
                             {debts.length
                                 ? debts.map((payment) => (
                                       <li key={`${payment.person}_${payment.amount}`}>
-                                          {`${payment.person} pays ${priceFormatter.format(payment.amount)} to ${payment.creditor}`}
+                                          {`${payment.person} pays `}
+                                          <b>${priceFormatter.format(payment.amount)}</b>
+                                          {` to ${payment.creditor}`}
                                       </li>
                                   ))
                                 : "No payments needed, everyone's expenses are equal"}
