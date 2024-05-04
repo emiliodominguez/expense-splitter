@@ -1,16 +1,29 @@
 export interface Expense {
+    /** The person associated with the expense. */
     person: string;
+    /** The amount of the expense. */
     amount: number;
 }
 
 export interface Debt extends Expense {
+    /** The creditor associated with the debt. */
     creditor?: string;
 }
 
+/**
+ * Calculates the total expenses from an array of expenses.
+ * @param expenses - An array of expenses.
+ * @returns The total amount of expenses.
+ */
 export function calculateTotalExpenses(expenses: Expense[]): number {
     return expenses.reduce((acc, expense) => (acc += expense.amount), 0);
 }
 
+/**
+ * Splits expenses equally among people.
+ * @param expenses - An array of expenses.
+ * @returns An array of expenses with amounts adjusted for equal splitting.
+ */
 export function splitExpensesEqually(expenses: Expense[]): Expense[] {
     const totalExpenses = calculateTotalExpenses(expenses);
     const peopleCount = expenses.length;
@@ -22,6 +35,11 @@ export function splitExpensesEqually(expenses: Expense[]): Expense[] {
     }));
 }
 
+/**
+ * Organizes payments to settle debts and credits.
+ * @param expenses - An array of expenses including debts and credits.
+ * @returns An array of debts representing pending transactions.
+ */
 export function organizePayments(expenses: Expense[]): Debt[] {
     const debts: Debt[] = [];
     const credits: Debt[] = [];

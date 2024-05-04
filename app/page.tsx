@@ -10,6 +10,10 @@ export default function Home(): JSX.Element {
     const [expenses, setExpenses] = useState<Expense[]>([]);
     const [debts, setDebts] = useState<Debt[] | null>(null);
 
+    /**
+     * Handler function to set an expense.
+     * @param e - The form event.
+     */
     function setExpense(e: React.FormEvent<HTMLFormElement>): void {
         e.preventDefault();
 
