@@ -8,7 +8,7 @@ export interface Debt extends Expense {
 }
 
 export function calculateTotalExpenses(expenses: Expense[]): number {
-    return expenses.reduce((acc, expense) => (acc += Number(expense.amount)), 0);
+    return expenses.reduce((acc, expense) => (acc += expense.amount), 0);
 }
 
 export function splitExpensesEqually(expenses: Expense[]): Expense[] {
@@ -16,45 +16,45 @@ export function splitExpensesEqually(expenses: Expense[]): Expense[] {
     const peopleCount = expenses.length;
     const equalShare = totalExpenses / peopleCount;
 
-    return expenses.reduce<Expense[]>((acc, expense) => {
-        const difference = expense.amount - equalShare;
-
-        acc.push({ person: expense.person, amount: difference });
-
-        return acc;
-    }, []);
+    return expenses.map((expense) => ({
+        person: expense.person,
+        amount: expense.amount - equalShare,
+    }));
 }
 
-export function organizePayments(paymentDetails: Expense[]): Debt[] {
-    const debts: Expense[] = [];
-    const credits: Expense[] = [];
+export function organizePayments(expenses: Expense[]): Debt[] {
+    const debts: Debt[] = [];
+    const credits: Debt[] = [];
+    const pendingTransactions: Debt[] = [];
 
-    for (const payment of paymentDetails) {
-        if (payment.amount > 0) {
-            credits.push(payment);
-        } else if (payment.amount < 0) {
-            debts.push(payment);
+    for (const expense of expenses) {
+        if (expense.amount > 0) {
+            credits.push(expense);
+        } else if (expense.amount < 0) {
+            debts.push(expense);
         }
     }
 
-    return debts.reduce<Debt[]>((acc, debt) => {
-        let remainingDebt = debt.amount;
+    for (const debtor of debts) {
+        let remainingDebt = debtor.amount;
 
-        credits.forEach((credit) => {
-            if (credit.amount > 0) {
-                const transferAmount = Math.min(-remainingDebt, credit.amount);
+        for (const creditor of credits) {
+            if (creditor.amount > 0) {
+                const amountToTransfer = Math.min(-remainingDebt, creditor.amount);
 
-                acc.push({
-                    person: debt.person,
-                    amount: transferAmount,
-                    creditor: credit.person,
+                if (amountToTransfer <= 0) continue;
+
+                pendingTransactions.push({
+                    person: debtor.person,
+                    amount: amountToTransfer,
+                    creditor: creditor.person,
                 });
 
-                remainingDebt += transferAmount;
-                credit.amount -= transferAmount;
+                remainingDebt += amountToTransfer;
+                creditor.amount -= amountToTransfer;
             }
-        });
+        }
+    }
 
-        return acc;
-    }, []);
+    return pendingTransactions;
 }
