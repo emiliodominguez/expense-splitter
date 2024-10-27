@@ -34,8 +34,13 @@
         padding: 0.5rem;
     }
 
+    .error-message,
     .add-btn {
         grid-column: 1 / -1;
+    }
+
+    .error-message {
+        color: #ff0000;
     }
 }
 

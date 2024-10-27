@@ -1,62 +1,83 @@
-"use client";
-
-import { useState } from "react";
-import styles from "./page.module.scss";
+import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
 import { splitExpensesEqually, organizePayments, type Expense, type Debt } from "./utils/helpers";
+import styles from "./page.module.scss";
+
+interface State {
+    expenses: Expense[];
+    debts: Debt[] | null;
+}
 
 const priceFormatter = new Intl.NumberFormat();
 
-export default function Home(): JSX.Element {
-    const [expenses, setExpenses] = useState<Expense[]>([]);
-    const [debts, setDebts] = useState<Debt[] | null>(null);
+const stateCookieId = "state";
+
+const initialState: State = {
+    expenses: [],
+    debts: null,
+};
+
+let errorMessage: string = "";
+
+export default async function Home(): Promise<JSX.Element> {
+    const storedState: State = JSON.parse((await cookies()).get(stateCookieId)?.value || JSON.stringify(initialState));
 
     /**
      * Handler function to set an expense.
-     * @param e - The form event.
+     * @param formData - Form data to set the expense.
      */
-    function setExpense(e: React.FormEvent<HTMLFormElement>): void {
-        e.preventDefault();
+    async function setExpense(formData: FormData): Promise<void> {
+        "use server";
 
-        const formData = new FormData(e.currentTarget);
         const expense = Object.fromEntries(formData) as unknown as Expense;
 
         if (expense.person && !isNaN(expense.amount)) {
-            setExpenses((prev) => {
-                const updatedExpenses: Expense[] = [
-                    ...prev,
-                    {
-                        person: expense.person,
-                        amount: Number(expense.amount) || 0,
-                    },
-                ];
+            const updatedExpenses: Expense[] = [
+                ...storedState.expenses,
+                {
+                    person: expense.person,
+                    amount: Number(expense.amount) || 0,
+                },
+            ];
 
-                const splitExpenses = splitExpensesEqually(updatedExpenses);
-                const organizedDebts = organizePayments(splitExpenses);
+            const splitExpenses = splitExpensesEqually(updatedExpenses);
+            const organizedDebts = organizePayments(splitExpenses);
 
-                setDebts(organizedDebts);
+            initialState.expenses = updatedExpenses;
+            initialState.debts = organizedDebts;
+            errorMessage = "";
 
-                return updatedExpenses;
-            });
-
-            // Reset form
-            e.currentTarget.reset();
-
-            // Focus on first input
-            const firstInput = e.currentTarget.querySelector("input");
-            firstInput?.focus();
+            (await cookies()).set(stateCookieId, JSON.stringify(initialState));
         } else {
-            alert("Please enter valid person and expense amount.");
+            errorMessage = "Please enter valid person and expense amount.";
         }
+
+        revalidatePath(".");
+    }
+
+    /**
+     * Function to reset the cookies and the state.
+     */
+    async function resetCookies(): Promise<void> {
+        "use server";
+
+        (await cookies()).delete(stateCookieId);
+
+        initialState.expenses = [];
+        initialState.debts = null;
+        errorMessage = "";
+
+        revalidatePath(".");
     }
 
     return (
         <main className={styles["container"]}>
             <h1>Expense Splitter</h1>
 
-            <form className={styles["form"]} onSubmit={setExpense}>
+            <form className={styles["form"]} action={setExpense}>
                 <div className={styles["field"]}>
                     <label htmlFor="person">Person</label>
-                    <input type="text" name="person" />
+                    <input type="text" name="person" autoFocus />
                 </div>
 
                 <div className={styles["field"]}>
@@ -64,14 +85,16 @@ export default function Home(): JSX.Element {
                     <input type="number" name="amount" pattern="[0-9]*" inputMode="numeric" />
                 </div>
 
+                {errorMessage && <small className={styles["error-message"]}>{errorMessage}</small>}
+
                 <button className={styles["add-btn"]}>Add</button>
             </form>
 
-            {!!expenses.length && (
+            {!!initialState.expenses.length && (
                 <>
                     <ul className={styles["list"]}>
-                        {expenses.map((expense) => (
-                            <li key={`${expense.person}_${expense.amount}`}>
+                        {initialState.expenses.map((expense, i) => (
+                            <li key={`${expense.person}_${expense.amount}_${i}`}>
                                 {expense.person}: <b>${priceFormatter.format(expense.amount || 0)}</b>
                                 {!expense.amount && <span>🐀</span>}
                             </li>
@@ -79,22 +102,26 @@ export default function Home(): JSX.Element {
                     </ul>
 
                     <p>
-                        <b>Total: ${priceFormatter.format(expenses.reduce((acc, expense) => (acc += expense.amount), 0))}</b>
+                        <b>Total: ${priceFormatter.format(initialState.expenses.reduce((acc, expense) => (acc += expense.amount), 0))}</b>
                     </p>
 
-                    {debts && (
+                    {initialState.debts && (
                         <ul className={styles["list"]}>
-                            {debts.length
-                                ? debts.map((payment) => (
+                            {initialState.debts.length
+                                ? initialState.debts.map((payment) => (
                                       <li key={`${payment.person}_${payment.amount}`}>
                                           {`${payment.person} pays `}
-                                          <b>${priceFormatter.format(payment.amount)}</b>
+                                          <b>${priceFormatter.format(Number(payment.amount.toFixed(2)))}</b>
                                           {` to ${payment.creditor}`}
                                       </li>
                                   ))
                                 : "No payments needed, everyone's expenses are equal"}
                         </ul>
                     )}
+
+                    <button type="button" className={styles["reset-btn"]} onClick={resetCookies}>
+                        Reset
+                    </button>
                 </>
             )}
         </main>
