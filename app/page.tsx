@@ -1,8 +1,9 @@
 import { revalidatePath } from "next/cache";
+import type { Expense } from "./utils/types";
 import { splitExpensesEqually, organizePayments, priceFormatter } from "./utils/helpers";
 import { translations } from "./utils/localization";
 import { getState, resetState, setState } from "./actions";
-import type { Expense } from "./utils/types";
+import { Icon } from "./components/Icon";
 
 let errorMessage: string = "";
 
@@ -93,8 +94,7 @@ export default async function Home(): Promise<JSX.Element> {
                                             : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50 shadow-sm"
                                     }`}
                                 >
-                                    <span>{isDark ? "🌙" : "☀️"}</span>
-
+                                    <Icon name={isDark ? "Moon" : "Sun"} className="w-4 h-4" />
                                     {locale.theme}
                                 </button>
                             </form>
@@ -107,8 +107,7 @@ export default async function Home(): Promise<JSX.Element> {
                                             : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50 shadow-sm"
                                     }`}
                                 >
-                                    <span>🌍</span>
-
+                                    <Icon name="World" className="w-4 h-4" />
                                     {state.language === "es" ? "ES" : "EN"}
                                 </button>
                             </form>
@@ -128,8 +127,7 @@ export default async function Home(): Promise<JSX.Element> {
                     }`}
                 >
                     <h2 className={`text-xl font-semibold mb-6 flex items-center gap-2 ${isDark ? "text-white" : "text-gray-900"}`}>
-                        <span>✨</span>
-
+                        <Icon name="Money" className="w-6 h-6" />
                         {locale.addExpense}
                     </h2>
 
@@ -181,14 +179,14 @@ export default async function Home(): Promise<JSX.Element> {
                                 }`}
                             >
                                 <small className="font-medium flex items-center gap-2">
-                                    <span>⚠️</span>
+                                    <Icon name="Error" className="w-4 h-4" />
                                     {errorMessage}
                                 </small>
                             </div>
                         )}
 
                         <button className="cursor-pointer w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-300 flex items-center justify-center gap-2">
-                            <span>➕</span>
+                            <Icon name="Plus" className="w-4 h-4" />
                             {locale.addButton}
                         </button>
                     </form>
@@ -204,7 +202,7 @@ export default async function Home(): Promise<JSX.Element> {
                         >
                             <div className="flex items-center justify-between mb-6">
                                 <h2 className={`text-xl font-semibold flex items-center gap-2 ${isDark ? "text-white" : "text-gray-900"}`}>
-                                    <span>📋</span>
+                                    <Icon name="People" className="w-6 h-6" />
                                     {locale.expenses}
                                 </h2>
 
@@ -258,7 +256,7 @@ export default async function Home(): Promise<JSX.Element> {
                                     }`}
                                 >
                                     <span className={`font-semibold flex items-center gap-2 ${isDark ? "text-green-200" : "text-green-800"}`}>
-                                        <span>💰</span>
+                                        <Icon name="Accounts" className="w-6 h-6" />
                                         {locale.total}
                                     </span>
 
@@ -276,7 +274,7 @@ export default async function Home(): Promise<JSX.Element> {
                             }`}
                         >
                             <h2 className={`text-xl font-semibold mb-6 flex items-center gap-2 ${isDark ? "text-white" : "text-gray-900"}`}>
-                                <span>💳</span>
+                                <Icon name="CreditCard" className="w-6 h-6" />
                                 {locale.paymentSummary}
                             </h2>
 
@@ -341,8 +339,7 @@ export default async function Home(): Promise<JSX.Element> {
                                 type="submit"
                                 className="cursor-pointer bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-300 flex items-center justify-center gap-2 mx-auto"
                             >
-                                <span>🗑️</span>
-
+                                <Icon name="TrashCan" className="w-5 h-5" />
                                 {locale.resetAll}
                             </button>
                         </form>
