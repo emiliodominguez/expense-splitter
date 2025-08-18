@@ -1,14 +1,19 @@
-export interface Expense {
-    /** The person associated with the expense. */
-    person: string;
-    /** The amount of the expense. */
-    amount: number;
-}
+import type { State, Expense, Debt } from "./types";
 
-export interface Debt extends Expense {
-    /** The creditor associated with the debt. */
-    creditor?: string;
-}
+/**
+ * Intl.NumberFormat instance for formatting prices.
+ */
+export const priceFormatter = new Intl.NumberFormat();
+
+/**
+ * The default state for the application.
+ */
+export const defaultState: State = {
+    expenses: [],
+    debts: null,
+    language: "es",
+    theme: "dark",
+};
 
 /**
  * Calculates the total expenses from an array of expenses.

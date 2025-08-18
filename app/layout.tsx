@@ -1,28 +1,37 @@
 import type { Metadata } from "next";
-import { Inter, Noto_Serif } from "next/font/google";
+import { Lora, Poppins } from "next/font/google";
+import { translations } from "./utils/localization";
+import { getState } from "./actions";
 import "../styles/main.scss";
 
-const fontPrimary = Inter({
+const fontPrimary = Poppins({
     subsets: ["latin"],
     weight: ["100", "300", "400", "500", "700", "900"],
     variable: "--font-primary",
 });
 
-const fontSecondary = Noto_Serif({
+const fontSecondary = Lora({
     subsets: ["latin"],
-    weight: ["200", "400", "700"],
+    weight: ["400", "500", "600", "700"],
     variable: "--font-secondary",
 });
 
-export const metadata: Metadata = {
-    title: "Expenses splitter",
-    description: "",
-};
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>): Promise<JSX.Element> {
+    const state = await getState();
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>): JSX.Element {
     return (
-        <html lang="en">
+        <html lang="en" className={state.theme === "dark" ? "dark" : ""}>
             <body className={[fontPrimary.variable, fontSecondary.variable].join(" ")}>{children}</body>
         </html>
     );
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+    const state = await getState();
+    const locale = translations[state.language || "es"];
+
+    return {
+        title: locale.title,
+        description: locale.description,
+    };
 }

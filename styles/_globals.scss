@@ -1,12 +1,5 @@
-*,
-*::before,
-*::after {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-family: var(--font-primary);
+html {
+    scroll-behavior: smooth;
 }
 
 h1,
