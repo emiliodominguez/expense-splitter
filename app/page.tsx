@@ -7,7 +7,7 @@ import { Icon } from "./components/Icon";
 
 let errorMessage: string = "";
 
-export default async function Home(): Promise<JSX.Element> {
+export default async function Home(): Promise<React.ReactNode> {
     const state = await getState();
     const locale = translations[state.language];
     const isDark = state.theme === "dark";

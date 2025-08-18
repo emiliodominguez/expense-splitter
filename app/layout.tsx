@@ -16,7 +16,7 @@ const fontSecondary = Lora({
     variable: "--font-secondary",
 });
 
-export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>): Promise<JSX.Element> {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>): Promise<React.ReactNode> {
     const state = await getState();
 
     return (
