@@ -16,12 +16,12 @@ const fontSecondary = Lora({
     variable: "--font-secondary",
 });
 
-export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>): Promise<React.ReactNode> {
+export default async function RootLayout(props: Readonly<{ children: React.ReactNode }>): Promise<React.ReactNode> {
     const state = await getState();
 
     return (
         <html lang="en" className={state.theme === "dark" ? "dark" : ""}>
-            <body className={[fontPrimary.variable, fontSecondary.variable].join(" ")}>{children}</body>
+            <body className={[fontPrimary.variable, fontSecondary.variable].join(" ")}>{props.children}</body>
         </html>
     );
 }
