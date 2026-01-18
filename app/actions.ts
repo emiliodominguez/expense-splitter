@@ -15,14 +15,6 @@ const stateCookieId = "EXPENSES_SPLITTER_STATE";
 const CURRENT_VERSION = 2;
 
 /**
- * Generates a unique ID for expenses.
- * @returns A unique string identifier
- */
-export function generateExpenseId(): string {
-    return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-}
-
-/**
  * Migrates state from older versions to the current version.
  * Handles backward compatibility with legacy data structures.
  * @param state - The potentially outdated state object

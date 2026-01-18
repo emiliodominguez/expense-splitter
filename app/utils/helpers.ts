@@ -6,6 +6,14 @@ import type { State, Expense, Debt, ExpenseGroup } from "./types";
 export const priceFormatter = new Intl.NumberFormat();
 
 /**
+ * Generates a unique ID for expenses.
+ * @returns A unique string identifier
+ */
+export function generateExpenseId(): string {
+    return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+}
+
+/**
  * The default state for the application.
  */
 export const defaultState: State = {
