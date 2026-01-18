@@ -130,36 +130,38 @@ export default async function Home({ searchParams }: PageProps): Promise<React.R
 
                 {/* Header with Theme and Language Toggle */}
                 <div className="text-center mb-8">
-                    <div className="flex justify-between items-center mb-6">
-                        <div className="flex gap-3">
+                    <div className="flex flex-wrap justify-between items-center gap-2 mb-6">
+                        <div className="flex gap-2">
                             <form action={toggleTheme}>
                                 <button
-                                    className={`cursor-pointer px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 border ${
+                                    className={`cursor-pointer p-2 sm:px-4 sm:py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 border ${
                                         isDark
                                             ? "bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700"
                                             : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50 shadow-sm"
                                     }`}
+                                    title={locale.theme}
                                 >
                                     <Icon name={isDark ? "Moon" : "Sun"} className="w-4 h-4" />
-                                    {locale.theme}
+                                    <span className="hidden sm:inline">{locale.theme}</span>
                                 </button>
                             </form>
 
                             <form action={toggleLanguage}>
                                 <button
-                                    className={`cursor-pointer px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 border ${
+                                    className={`cursor-pointer p-2 sm:px-4 sm:py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 border ${
                                         isDark
                                             ? "bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700"
                                             : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50 shadow-sm"
                                     }`}
+                                    title={locale.language}
                                 >
                                     <Icon name="World" className="w-4 h-4" />
-                                    {state.language === "es" ? "ES" : "EN"}
+                                    <span className="hidden sm:inline">{state.language === "es" ? "ES" : "EN"}</span>
                                 </button>
                             </form>
                         </div>
 
-                        <div className="flex gap-3">
+                        <div className="flex gap-2">
                             {!!state.expenses.length && !isViewMode && (
                                 <ShareButton state={state} isDark={isDark} locale={locale} />
                             )}

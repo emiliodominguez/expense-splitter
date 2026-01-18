@@ -106,7 +106,7 @@ export function ShareButton({ state, isDark, locale }: ShareButtonProps): React.
         <div className="relative">
             <button
                 onClick={handleShare}
-                className={`cursor-pointer px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 border ${
+                className={`cursor-pointer p-2 sm:px-4 sm:py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 border ${
                     copied
                         ? "bg-green-600 text-white border-green-600"
                         : isDark
@@ -118,12 +118,12 @@ export function ShareButton({ state, isDark, locale }: ShareButtonProps): React.
                 {copied ? (
                     <>
                         <Icon name="Check" className="w-4 h-4" />
-                        {locale.linkCopied}
+                        <span className="hidden sm:inline">{locale.linkCopied}</span>
                     </>
                 ) : (
                     <>
                         <Icon name="Share" className="w-4 h-4" />
-                        {locale.share}
+                        <span className="hidden sm:inline">{locale.share}</span>
                     </>
                 )}
             </button>

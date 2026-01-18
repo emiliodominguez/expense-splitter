@@ -78,7 +78,7 @@ export function OptionsPanel({ isDark, locale }: OptionsPanelProps): React.React
         <div className="relative" ref={panelRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className={`cursor-pointer px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 border ${
+                className={`cursor-pointer p-2 sm:px-4 sm:py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 border ${
                     isDark
                         ? "bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700"
                         : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50 shadow-sm"
