@@ -10,3 +10,15 @@ h5,
 h6 {
     font-family: var(--font-secondary);
 }
+
+/**
+ * Rat emoji toggle - controlled by CSS custom property
+ * Set by OptionsPanel component via JavaScript
+ */
+:root {
+    --rat-emoji-display: inline;
+}
+
+.rat-emoji {
+    display: var(--rat-emoji-display);
+}

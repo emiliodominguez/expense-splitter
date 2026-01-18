@@ -1,4 +1,4 @@
-import type { State, Expense, Debt } from "./types";
+import type { State, Expense, Debt, ExpenseGroup } from "./types";
 
 /**
  * Intl.NumberFormat instance for formatting prices.
@@ -9,7 +9,9 @@ export const priceFormatter = new Intl.NumberFormat();
  * The default state for the application.
  */
 export const defaultState: State = {
+    version: 2,
     expenses: [],
+    groups: [],
     debts: null,
     language: "es",
     theme: "dark",
@@ -53,8 +55,71 @@ export function splitExpensesEqually(expenses: Expense[]): Expense[] {
     const equalShare = totalExpenses / peopleCount;
 
     return Array.from(groupedExpenses.entries()).map(([person, amount]) => ({
+        id: `balance-${person}`,
         person,
         amount: amount - equalShare,
+    }));
+}
+
+/**
+ * Splits expenses considering expense groups.
+ * Each expense can belong to a group, and only participants in that group
+ * share the cost. Expenses without a group are split among everyone.
+ *
+ * @param expenses - An array of expenses with optional group assignments
+ * @param groups - An array of expense groups defining participants
+ * @returns An array of balances (positive = owed money, negative = owes money)
+ */
+export function splitExpensesByGroups(expenses: Expense[], groups: ExpenseGroup[]): Expense[] {
+    if (!expenses.length) return [];
+
+    // Get all unique people from expenses
+    const allPeople = new Set<string>();
+    expenses.forEach((e) => allPeople.add(e.person));
+
+    // Also include people from groups who may not have paid anything
+    groups.forEach((g) => g.participants.forEach((p) => allPeople.add(p)));
+
+    // Create a map of group ID to group for quick lookup
+    const groupMap = new Map<string, ExpenseGroup>();
+    groups.forEach((g) => groupMap.set(g.id, g));
+
+    // Initialize balances for all people
+    const balances = new Map<string, number>();
+    allPeople.forEach((person) => balances.set(person, 0));
+
+    // Process each expense
+    for (const expense of expenses) {
+        // Credit the payer with what they paid
+        const currentBalance = balances.get(expense.person) || 0;
+        balances.set(expense.person, currentBalance + expense.amount);
+
+        // Determine who should share this expense
+        let participants: string[];
+
+        if (expense.groupId && groupMap.has(expense.groupId)) {
+            // Expense belongs to a specific group
+            participants = groupMap.get(expense.groupId)!.participants;
+        } else {
+            // Expense is shared by everyone
+            participants = Array.from(allPeople);
+        }
+
+        // Calculate equal share for this expense
+        const share = expense.amount / participants.length;
+
+        // Debit each participant their share
+        for (const participant of participants) {
+            const participantBalance = balances.get(participant) || 0;
+            balances.set(participant, participantBalance - share);
+        }
+    }
+
+    // Convert to array format
+    return Array.from(balances.entries()).map(([person, amount]) => ({
+        id: `balance-${person}`,
+        person,
+        amount,
     }));
 }
 
