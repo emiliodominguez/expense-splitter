@@ -86,7 +86,7 @@ export function OptionsPanel({
                 onClick={() => setIsOpen(!isOpen)}
                 className={`cursor-pointer p-2.5 rounded-xl transition-all duration-200 ${
                     isOpen
-                        ? "bg-violet-500 text-white shadow-lg shadow-violet-500/30"
+                        ? "bg-blue-500 text-white shadow-lg shadow-blue-500/30"
                         : isDark
                             ? "bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white"
                             : "bg-gray-900/5 text-gray-600 hover:bg-gray-900/10 hover:text-gray-900"
@@ -134,20 +134,19 @@ export function OptionsPanel({
                                     {locale.theme}
                                 </span>
                             </div>
-                            <form action={toggleThemeAction}>
-                                <button
-                                    type="submit"
-                                    className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${
-                                        isDark ? "bg-violet-500" : "bg-gray-300"
+                            <button
+                                onClick={toggleThemeAction}
+                                type="button"
+                                className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${
+                                    isDark ? "bg-blue-500" : "bg-gray-300"
+                                }`}
+                            >
+                                <span
+                                    className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${
+                                        isDark ? "translate-x-5" : "translate-x-0.5"
                                     }`}
-                                >
-                                    <span
-                                        className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${
-                                            isDark ? "translate-x-5" : "translate-x-0.5"
-                                        }`}
-                                    />
-                                </button>
-                            </form>
+                                />
+                            </button>
                         </div>
 
                         {/* Language Toggle */}
@@ -164,18 +163,17 @@ export function OptionsPanel({
                                     {locale.language}
                                 </span>
                             </div>
-                            <form action={toggleLanguageAction}>
-                                <button
-                                    type="submit"
-                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
-                                        isDark
-                                            ? "bg-gray-600 text-white hover:bg-gray-500"
-                                            : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                                    }`}
-                                >
-                                    {currentLanguage.toUpperCase()}
-                                </button>
-                            </form>
+                            <button
+                                onClick={toggleLanguageAction}
+                                type="button"
+                                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+                                    isDark
+                                        ? "bg-gray-600 text-white hover:bg-gray-500"
+                                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                                }`}
+                            >
+                                {currentLanguage.toUpperCase()}
+                            </button>
                         </div>
 
                         {/* Rat Emoji Toggle */}
@@ -193,9 +191,10 @@ export function OptionsPanel({
                                     {locale.showRatEmoji}
                                 </span>
                             </div>
-                            <div
+                            <button
+                                type="button"
                                 className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${
-                                    options.showRatEmoji ? "bg-violet-500" : isDark ? "bg-gray-600" : "bg-gray-300"
+                                    options.showRatEmoji ? "bg-blue-500" : isDark ? "bg-gray-600" : "bg-gray-300"
                                 }`}
                             >
                                 <span
@@ -203,7 +202,7 @@ export function OptionsPanel({
                                         options.showRatEmoji ? "translate-x-5" : "translate-x-0.5"
                                     }`}
                                 />
-                            </div>
+                            </button>
                         </div>
                     </div>
                 </div>

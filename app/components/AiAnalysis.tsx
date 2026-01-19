@@ -143,51 +143,27 @@ export function AiAnalysis({ state, isDark, locale }: AiAnalysisProps): React.Re
                     isDark ? "text-white" : "text-gray-900"
                 }`}
             >
-                <div className={`p-2 rounded-xl ${isDark ? "bg-violet-500/20" : "bg-violet-100"}`}>
-                    <Icon name="Sparkles" className="w-5 h-5 text-violet-500" />
+                <div className={`p-2 rounded-xl ${isDark ? "bg-blue-500/20" : "bg-blue-100"}`}>
+                    <Icon name="Sparkles" className="w-5 h-5 text-blue-500" />
                 </div>
                 {locale.aiAnalysis}
             </h2>
 
-            <div className="flex flex-wrap gap-2 mb-6">
-                <button
-                    onClick={() => analyze("settlement")}
-                    disabled={loading}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 disabled:opacity-50 ${
-                        isDark
-                            ? "bg-violet-500/20 text-violet-300 hover:bg-violet-500/30"
-                            : "bg-violet-100 text-violet-700 hover:bg-violet-200"
-                    }`}
-                >
-                    {locale.suggestSettlement}
-                </button>
-                <button
-                    onClick={() => analyze("patterns")}
-                    disabled={loading}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 disabled:opacity-50 ${
-                        isDark
-                            ? "bg-blue-500/20 text-blue-300 hover:bg-blue-500/30"
-                            : "bg-blue-100 text-blue-700 hover:bg-blue-200"
-                    }`}
-                >
-                    {locale.analyzePatterns}
-                </button>
-                <button
-                    onClick={() => analyze("insights")}
-                    disabled={loading}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 disabled:opacity-50 ${
-                        isDark
-                            ? "bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30"
-                            : "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
-                    }`}
-                >
-                    {locale.getInsights}
-                </button>
-            </div>
+            <button
+                onClick={() => analyze("settlement")}
+                disabled={loading}
+                className={`w-full px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 disabled:opacity-50 mb-6 ${
+                    isDark
+                        ? "bg-blue-500/20 text-blue-300 hover:bg-blue-500/30"
+                        : "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                }`}
+            >
+                {locale.suggestSettlement}
+            </button>
 
             {loading && (
                 <div className={`flex items-center gap-3 p-4 rounded-xl ${isDark ? "bg-gray-900/50 text-gray-400" : "bg-gray-50 text-gray-500"}`}>
-                    <div className="w-5 h-5 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
                     {locale.analyzing}
                 </div>
             )}
@@ -210,13 +186,13 @@ export function AiAnalysis({ state, isDark, locale }: AiAnalysisProps): React.Re
                             <div
                                 key={index}
                                 className={`p-4 rounded-lg flex items-center justify-between ${
-                                    isDark ? "bg-purple-900/30" : "bg-purple-50"
+                                    isDark ? "bg-blue-900/30" : "bg-blue-50"
                                 }`}
                             >
                                 <div className="flex items-center gap-3">
                                     <div
                                         className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm ${
-                                            isDark ? "bg-purple-600 text-white" : "bg-purple-500 text-white"
+                                            isDark ? "bg-blue-600 text-white" : "bg-blue-500 text-white"
                                         }`}
                                     >
                                         {payment.from.charAt(0).toUpperCase()}
@@ -229,7 +205,7 @@ export function AiAnalysis({ state, isDark, locale }: AiAnalysisProps): React.Re
                                 </div>
                                 <span
                                     className={`font-bold px-3 py-1 rounded ${
-                                        isDark ? "bg-purple-800 text-purple-200" : "bg-purple-200 text-purple-800"
+                                        isDark ? "bg-blue-800 text-blue-200" : "bg-blue-200 text-blue-800"
                                     }`}
                                 >
                                     ${payment.amount.toFixed(2)}
@@ -287,8 +263,8 @@ export function AiAnalysis({ state, isDark, locale }: AiAnalysisProps): React.Re
                         <div
                             className={`p-4 rounded-lg border-2 border-dashed ${
                                 isDark
-                                    ? "border-purple-700 bg-purple-900/20 text-purple-200"
-                                    : "border-purple-300 bg-purple-50 text-purple-800"
+                                    ? "border-blue-700 bg-blue-900/20 text-blue-200"
+                                    : "border-blue-300 bg-blue-50 text-blue-800"
                             }`}
                         >
                             <p className="font-medium flex items-center gap-2">

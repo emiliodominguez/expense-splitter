@@ -130,7 +130,7 @@ export default async function Home({ searchParams }: PageProps): Promise<React.R
             className={`min-h-screen transition-colors duration-300 ${
                 isDark
                     ? "bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 text-white"
-                    : "bg-gradient-to-br from-slate-50 via-white to-violet-50 text-gray-900"
+                    : "bg-gradient-to-br from-slate-50 via-white to-blue-50 text-gray-900"
             }`}
         >
             <div className="max-w-4xl mx-auto px-4 py-8">
@@ -165,8 +165,8 @@ export default async function Home({ searchParams }: PageProps): Promise<React.R
                         <h1
                             className={`text-4xl sm:text-5xl font-extrabold mb-3 tracking-tight ${
                                 isDark
-                                    ? "bg-gradient-to-r from-white via-violet-200 to-violet-400 bg-clip-text text-transparent"
-                                    : "bg-gradient-to-r from-gray-900 via-violet-700 to-violet-500 bg-clip-text text-transparent"
+                                    ? "bg-gradient-to-r from-white via-blue-200 to-cyan-400 bg-clip-text text-transparent"
+                                    : "bg-gradient-to-r from-gray-900 via-blue-700 to-blue-500 bg-clip-text text-transparent"
                             }`}
                         >
                             {locale.title}
@@ -185,7 +185,7 @@ export default async function Home({ searchParams }: PageProps): Promise<React.R
                         }`}
                     >
                         <h2 className={`text-xl font-bold mb-6 flex items-center gap-3 ${isDark ? "text-white" : "text-gray-900"}`}>
-                            <div className={`p-2 rounded-xl ${isDark ? "bg-violet-500/20 text-violet-400" : "bg-violet-100 text-violet-600"}`}>
+                            <div className={`p-2 rounded-xl ${isDark ? "bg-blue-500/20 text-blue-400" : "bg-blue-100 text-blue-600"}`}>
                                 <Icon name="Money" className="w-5 h-5" />
                             </div>
                             {locale.addExpense}
@@ -203,7 +203,7 @@ export default async function Home({ searchParams }: PageProps): Promise<React.R
                                         name="person"
                                         placeholder={locale.personPlaceholder}
                                         autoFocus
-                                        className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 focus:ring-0 focus:border-violet-500 ${
+                                        className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 focus:ring-0 focus:border-blue-500 ${
                                             isDark
                                                 ? "bg-gray-900/50 border-gray-600 text-white placeholder-gray-500"
                                                 : "bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400 focus:bg-white"
@@ -221,7 +221,7 @@ export default async function Home({ searchParams }: PageProps): Promise<React.R
                                         name="amount"
                                         inputMode="decimal"
                                         placeholder={locale.amountPlaceholder}
-                                        className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 focus:ring-0 focus:border-violet-500 ${
+                                        className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 focus:ring-0 focus:border-blue-500 ${
                                             isDark
                                                 ? "bg-gray-900/50 border-gray-600 text-white placeholder-gray-500"
                                                 : "bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400 focus:bg-white"
@@ -236,7 +236,7 @@ export default async function Home({ searchParams }: PageProps): Promise<React.R
 
                                     <select
                                         name="groupId"
-                                        className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 focus:ring-0 focus:border-violet-500 ${
+                                        className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 focus:ring-0 focus:border-blue-500 ${
                                             isDark
                                                 ? "bg-gray-900/50 border-gray-600 text-white"
                                                 : "bg-gray-50 border-gray-200 text-gray-900 focus:bg-white"
@@ -265,7 +265,7 @@ export default async function Home({ searchParams }: PageProps): Promise<React.R
                                 </div>
                             )}
 
-                            <button className="cursor-pointer w-full bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 text-white font-semibold py-3.5 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40">
+                            <button className="cursor-pointer w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-semibold py-3.5 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40">
                                 <Icon name="Plus" className="w-5 h-5" />
                                 {locale.addButton}
                             </button>
@@ -339,7 +339,7 @@ export default async function Home({ searchParams }: PageProps): Promise<React.R
                                                         {personGroups.get(expense.person)!.map((groupName) => (
                                                             <span
                                                                 key={groupName}
-                                                                className={`text-xs px-2 py-0.5 rounded-md font-medium ${isDark ? "bg-purple-500/20 text-purple-300" : "bg-purple-100 text-purple-600"}`}
+                                                                className={`text-xs px-2 py-0.5 rounded-md font-medium ${isDark ? "bg-green-500/20 text-green-300" : "bg-green-100 text-green-600"}`}
                                                             >
                                                                 {groupName}
                                                             </span>

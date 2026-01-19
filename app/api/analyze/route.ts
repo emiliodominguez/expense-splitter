@@ -81,6 +81,7 @@ function buildPrompt(state: State, type: AnalysisType, language: string): string
 
     const prompts: Record<AnalysisType, string> = {
         settlement: `
+${langContext}
 Analyze this expense splitting scenario and compute the OPTIMIZED list of payments needed to settle all debts.
 
 Expenses:

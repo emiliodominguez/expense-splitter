@@ -155,14 +155,14 @@ export function GroupManager({ state, isDark, locale, uniquePeople }: GroupManag
                 className="w-full flex items-center justify-between"
             >
                 <h2 className={`text-xl font-bold flex items-center gap-3 ${isDark ? "text-white" : "text-gray-900"}`}>
-                    <div className={`p-2 rounded-xl ${isDark ? "bg-purple-500/20 text-purple-400" : "bg-purple-100 text-purple-600"}`}>
+                    <div className={`p-2 rounded-xl ${isDark ? "bg-green-500/20 text-green-400" : "bg-green-100 text-green-600"}`}>
                         <Icon name="Group" className="w-5 h-5" />
                     </div>
                     {locale.groups}
                     {state.groups.length > 0 && (
                         <span
                             className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
-                                isDark ? "bg-purple-500/20 text-purple-300" : "bg-purple-100 text-purple-700"
+                                isDark ? "bg-green-500/20 text-green-300" : "bg-green-100 text-green-700"
                             }`}
                         >
                             {state.groups.length}
@@ -252,7 +252,7 @@ export function GroupManager({ state, isDark, locale, uniquePeople }: GroupManag
                                     value={groupName}
                                     onChange={(e) => setGroupName(e.target.value)}
                                     placeholder={locale.groupNamePlaceholder}
-                                    className={`w-full px-4 py-3 border rounded-lg transition-colors duration-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent ${
+                                    className={`w-full px-4 py-3 border rounded-lg transition-colors duration-300 focus:ring-2 focus:ring-green-500 focus:border-transparent ${
                                         isDark
                                             ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
                                             : "bg-white border-gray-300 text-gray-900 placeholder-gray-500"
@@ -271,13 +271,13 @@ export function GroupManager({ state, isDark, locale, uniquePeople }: GroupManag
                                         {selectedParticipants.map((person) => (
                                             <span
                                                 key={person}
-                                                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium bg-purple-600 text-white"
+                                                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium bg-green-600 text-white"
                                             >
                                                 {person}
                                                 <button
                                                     type="button"
                                                     onClick={() => removeParticipant(person)}
-                                                    className="ml-1 hover:bg-purple-700 rounded-full p-0.5"
+                                                    className="ml-1 hover:bg-green-700 rounded-full p-0.5"
                                                 >
                                                     <Icon name="Error" className="w-3 h-3" />
                                                 </button>
@@ -295,7 +295,7 @@ export function GroupManager({ state, isDark, locale, uniquePeople }: GroupManag
                                         onChange={(e) => setNewParticipantName(e.target.value)}
                                         onKeyDown={handleParticipantKeyDown}
                                         placeholder={locale.addParticipantPlaceholder}
-                                        className={`flex-1 px-3 py-2 border rounded-lg text-sm transition-colors duration-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent ${
+                                        className={`flex-1 px-3 py-2 border rounded-lg text-sm transition-colors duration-300 focus:ring-2 focus:ring-green-500 focus:border-transparent ${
                                             isDark
                                                 ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
                                                 : "bg-white border-gray-300 text-gray-900 placeholder-gray-500"
@@ -305,7 +305,7 @@ export function GroupManager({ state, isDark, locale, uniquePeople }: GroupManag
                                         type="button"
                                         onClick={addParticipant}
                                         disabled={!newParticipantName.trim()}
-                                        className="px-3 py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+                                        className="px-3 py-2 bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
                                     >
                                         <Icon name="Plus" className="w-4 h-4" />
                                     </button>
@@ -341,7 +341,7 @@ export function GroupManager({ state, isDark, locale, uniquePeople }: GroupManag
                                 <button
                                     type="submit"
                                     disabled={!groupName.trim() || selectedParticipants.length === 0}
-                                    className="flex-1 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300"
+                                    className="flex-1 bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300"
                                 >
                                     {editingGroup ? locale.saveGroup : locale.createGroup}
                                 </button>
@@ -363,8 +363,8 @@ export function GroupManager({ state, isDark, locale, uniquePeople }: GroupManag
                             onClick={() => setIsCreating(true)}
                             className={`w-full py-3 px-4 rounded-lg font-medium border-2 border-dashed transition-colors ${
                                 isDark
-                                    ? "border-gray-600 text-gray-400 hover:border-purple-500 hover:text-purple-400"
-                                    : "border-gray-300 text-gray-500 hover:border-purple-500 hover:text-purple-600"
+                                    ? "border-gray-600 text-gray-400 hover:border-green-500 hover:text-green-400"
+                                    : "border-gray-300 text-gray-500 hover:border-green-500 hover:text-green-600"
                             }`}
                         >
                             <Icon name="Plus" className="w-4 h-4 inline-block mr-2" />
