@@ -142,8 +142,8 @@ export function OptionsPanel({
                                 }`}
                             >
                                 <span
-                                    className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${
-                                        isDark ? "translate-x-5" : "translate-x-0.5"
+                                    className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${
+                                        isDark ? "translate-x-5" : "translate-x-0"
                                     }`}
                                 />
                             </button>
@@ -198,8 +198,8 @@ export function OptionsPanel({
                                 }`}
                             >
                                 <span
-                                    className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${
-                                        options.showRatEmoji ? "translate-x-5" : "translate-x-0.5"
+                                    className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${
+                                        options.showRatEmoji ? "translate-x-5" : "translate-x-0"
                                     }`}
                                 />
                             </button>
