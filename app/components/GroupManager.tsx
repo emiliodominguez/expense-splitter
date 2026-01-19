@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Icon } from "./Icon";
 import type { State, ExpenseGroup } from "../utils/types";
 
@@ -28,6 +28,15 @@ export function GroupManager({ state, isDark, locale, uniquePeople }: GroupManag
     const [editingGroup, setEditingGroup] = useState<ExpenseGroup | null>(null);
     const [groupName, setGroupName] = useState("");
     const [selectedParticipants, setSelectedParticipants] = useState<string[]>([]);
+    const [newParticipantName, setNewParticipantName] = useState("");
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    // Focus input when adding a new participant
+    useEffect(() => {
+        if (isCreating && inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [isCreating]);
 
     /**
      * Resets the form state.
@@ -35,6 +44,7 @@ export function GroupManager({ state, isDark, locale, uniquePeople }: GroupManag
     function resetForm(): void {
         setGroupName("");
         setSelectedParticipants([]);
+        setNewParticipantName("");
         setIsCreating(false);
         setEditingGroup(null);
     }
@@ -46,6 +56,34 @@ export function GroupManager({ state, isDark, locale, uniquePeople }: GroupManag
         setSelectedParticipants((prev) =>
             prev.includes(person) ? prev.filter((p) => p !== person) : [...prev, person]
         );
+    }
+
+    /**
+     * Adds a new participant by name.
+     */
+    function addParticipant(): void {
+        const name = newParticipantName.trim();
+        if (name && !selectedParticipants.includes(name)) {
+            setSelectedParticipants((prev) => [...prev, name]);
+            setNewParticipantName("");
+        }
+    }
+
+    /**
+     * Handles key press in participant input.
+     */
+    function handleParticipantKeyDown(e: React.KeyboardEvent<HTMLInputElement>): void {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            addParticipant();
+        }
+    }
+
+    /**
+     * Removes a participant from the list.
+     */
+    function removeParticipant(person: string): void {
+        setSelectedParticipants((prev) => prev.filter((p) => p !== person));
     }
 
     /**
@@ -101,28 +139,30 @@ export function GroupManager({ state, isDark, locale, uniquePeople }: GroupManag
         setIsCreating(true);
     }
 
-    // Don't show group manager if no people exist yet
-    if (uniquePeople.length === 0) {
-        return null;
-    }
+    // Get suggested people from existing expenses that aren't already selected
+    const suggestedPeople = uniquePeople.filter((p) => !selectedParticipants.includes(p));
 
     return (
         <div
-            className={`rounded-xl shadow-lg p-6 mb-8 border transition-colors duration-300 ${
-                isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+            className={`rounded-2xl shadow-xl p-6 sm:p-8 mb-8 border backdrop-blur-sm transition-all duration-300 ${
+                isDark
+                    ? "bg-gray-800/80 border-gray-700/50 shadow-gray-900/50"
+                    : "bg-white/80 border-gray-200/50 shadow-gray-200/50"
             }`}
         >
             <button
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="w-full flex items-center justify-between"
             >
-                <h2 className={`text-xl font-semibold flex items-center gap-2 ${isDark ? "text-white" : "text-gray-900"}`}>
-                    <Icon name="Group" className="w-6 h-6" />
+                <h2 className={`text-xl font-bold flex items-center gap-3 ${isDark ? "text-white" : "text-gray-900"}`}>
+                    <div className={`p-2 rounded-xl ${isDark ? "bg-purple-500/20 text-purple-400" : "bg-purple-100 text-purple-600"}`}>
+                        <Icon name="Group" className="w-5 h-5" />
+                    </div>
                     {locale.groups}
                     {state.groups.length > 0 && (
                         <span
-                            className={`text-sm font-medium px-2 py-0.5 rounded-full ${
-                                isDark ? "bg-purple-900 text-purple-200" : "bg-purple-100 text-purple-800"
+                            className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
+                                isDark ? "bg-purple-500/20 text-purple-300" : "bg-purple-100 text-purple-700"
                             }`}
                         >
                             {state.groups.length}
@@ -132,7 +172,7 @@ export function GroupManager({ state, isDark, locale, uniquePeople }: GroupManag
                 <Icon
                     name="Plus"
                     className={`w-5 h-5 transition-transform duration-300 ${isExpanded ? "rotate-45" : ""} ${
-                        isDark ? "text-gray-400" : "text-gray-500"
+                        isDark ? "text-gray-400" : "text-gray-400"
                     }`}
                 />
             </button>
@@ -224,28 +264,76 @@ export function GroupManager({ state, isDark, locale, uniquePeople }: GroupManag
                                 <label className={`block text-sm font-medium mb-2 ${isDark ? "text-gray-300" : "text-gray-700"}`}>
                                     {locale.participants}
                                 </label>
-                                <div className="flex flex-wrap gap-2">
-                                    {uniquePeople.map((person) => (
-                                        <button
-                                            key={person}
-                                            type="button"
-                                            onClick={() => toggleParticipant(person)}
-                                            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                                                selectedParticipants.includes(person)
-                                                    ? "bg-purple-600 text-white"
-                                                    : isDark
-                                                        ? "bg-gray-600 text-gray-200 hover:bg-gray-500"
-                                                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                                            }`}
-                                        >
-                                            {person}
-                                        </button>
-                                    ))}
+
+                                {/* Selected participants */}
+                                {selectedParticipants.length > 0 && (
+                                    <div className="flex flex-wrap gap-2 mb-3">
+                                        {selectedParticipants.map((person) => (
+                                            <span
+                                                key={person}
+                                                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium bg-purple-600 text-white"
+                                            >
+                                                {person}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeParticipant(person)}
+                                                    className="ml-1 hover:bg-purple-700 rounded-full p-0.5"
+                                                >
+                                                    <Icon name="Error" className="w-3 h-3" />
+                                                </button>
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* Add participant input */}
+                                <div className="flex gap-2 mb-3">
+                                    <input
+                                        ref={inputRef}
+                                        type="text"
+                                        value={newParticipantName}
+                                        onChange={(e) => setNewParticipantName(e.target.value)}
+                                        onKeyDown={handleParticipantKeyDown}
+                                        placeholder={locale.addParticipantPlaceholder}
+                                        className={`flex-1 px-3 py-2 border rounded-lg text-sm transition-colors duration-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent ${
+                                            isDark
+                                                ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                                                : "bg-white border-gray-300 text-gray-900 placeholder-gray-500"
+                                        }`}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={addParticipant}
+                                        disabled={!newParticipantName.trim()}
+                                        className="px-3 py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+                                    >
+                                        <Icon name="Plus" className="w-4 h-4" />
+                                    </button>
                                 </div>
-                                {uniquePeople.length === 0 && (
-                                    <p className={`text-sm mt-2 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
-                                        {locale.selectParticipants}
-                                    </p>
+
+                                {/* Suggested participants from existing expenses */}
+                                {suggestedPeople.length > 0 && (
+                                    <div>
+                                        <p className={`text-xs mb-2 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                                            {locale.suggestedParticipants}
+                                        </p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {suggestedPeople.map((person) => (
+                                                <button
+                                                    key={person}
+                                                    type="button"
+                                                    onClick={() => toggleParticipant(person)}
+                                                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                                                        isDark
+                                                            ? "bg-gray-600 text-gray-200 hover:bg-gray-500"
+                                                            : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                                                    }`}
+                                                >
+                                                    + {person}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
                                 )}
                             </div>
 

@@ -13,9 +13,9 @@ interface AiAnalysisProps {
 type AnalysisType = "settlement" | "patterns" | "insights";
 
 /**
- * Structured analysis response from the AI.
+ * Structured analysis response from the AI (patterns/insights).
  */
-interface AnalysisResponse {
+interface GeneralAnalysisResponse {
     summary: string;
     points: Array<{
         title: string;
@@ -24,6 +24,23 @@ interface AnalysisResponse {
     }>;
     recommendation?: string;
 }
+
+/**
+ * Settlement analysis response - optimized payment list.
+ */
+interface SettlementResponse {
+    payments: Array<{
+        from: string;
+        to: string;
+        amount: number;
+    }>;
+    totalTransactions: number;
+    savings?: string;
+}
+
+type AnalysisResponse =
+    | { type: "general"; analysis: GeneralAnalysisResponse }
+    | { type: "settlement"; analysis: SettlementResponse };
 
 /**
  * Icon and color mapping for point types.
@@ -95,7 +112,7 @@ export function AiAnalysis({ state, isDark, locale }: AiAnalysisProps): React.Re
                 throw new Error(data.error || "Analysis failed");
             }
 
-            setAnalysis(data.analysis);
+            setAnalysis({ type: data.type, analysis: data.analysis });
         } catch (err) {
             setError(err instanceof Error ? err.message : locale.analysisError);
         } finally {
@@ -115,27 +132,31 @@ export function AiAnalysis({ state, isDark, locale }: AiAnalysisProps): React.Re
 
     return (
         <div
-            className={`rounded-xl shadow-lg p-6 mt-6 border transition-colors duration-300 ${
-                isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+            className={`rounded-2xl shadow-xl p-6 sm:p-8 mt-8 border backdrop-blur-sm transition-all duration-300 ${
+                isDark
+                    ? "bg-gray-800/80 border-gray-700/50 shadow-gray-900/50"
+                    : "bg-white/80 border-gray-200/50 shadow-gray-200/50"
             }`}
         >
             <h2
-                className={`text-xl font-semibold mb-4 flex items-center gap-2 ${
+                className={`text-xl font-bold mb-6 flex items-center gap-3 ${
                     isDark ? "text-white" : "text-gray-900"
                 }`}
             >
-                <Icon name="Sparkles" className="w-6 h-6 text-purple-500" />
+                <div className={`p-2 rounded-xl ${isDark ? "bg-violet-500/20" : "bg-violet-100"}`}>
+                    <Icon name="Sparkles" className="w-5 h-5 text-violet-500" />
+                </div>
                 {locale.aiAnalysis}
             </h2>
 
-            <div className="flex flex-wrap gap-2 mb-4">
+            <div className="flex flex-wrap gap-2 mb-6">
                 <button
                     onClick={() => analyze("settlement")}
                     disabled={loading}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 ${
+                    className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 disabled:opacity-50 ${
                         isDark
-                            ? "bg-purple-900/50 text-purple-200 hover:bg-purple-800"
-                            : "bg-purple-100 text-purple-700 hover:bg-purple-200"
+                            ? "bg-violet-500/20 text-violet-300 hover:bg-violet-500/30"
+                            : "bg-violet-100 text-violet-700 hover:bg-violet-200"
                     }`}
                 >
                     {locale.suggestSettlement}
@@ -143,9 +164,9 @@ export function AiAnalysis({ state, isDark, locale }: AiAnalysisProps): React.Re
                 <button
                     onClick={() => analyze("patterns")}
                     disabled={loading}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 ${
+                    className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 disabled:opacity-50 ${
                         isDark
-                            ? "bg-blue-900/50 text-blue-200 hover:bg-blue-800"
+                            ? "bg-blue-500/20 text-blue-300 hover:bg-blue-500/30"
                             : "bg-blue-100 text-blue-700 hover:bg-blue-200"
                     }`}
                 >
@@ -154,10 +175,10 @@ export function AiAnalysis({ state, isDark, locale }: AiAnalysisProps): React.Re
                 <button
                     onClick={() => analyze("insights")}
                     disabled={loading}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 ${
+                    className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 disabled:opacity-50 ${
                         isDark
-                            ? "bg-green-900/50 text-green-200 hover:bg-green-800"
-                            : "bg-green-100 text-green-700 hover:bg-green-200"
+                            ? "bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30"
+                            : "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
                     }`}
                 >
                     {locale.getInsights}
@@ -165,23 +186,69 @@ export function AiAnalysis({ state, isDark, locale }: AiAnalysisProps): React.Re
             </div>
 
             {loading && (
-                <div className={`flex items-center gap-2 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
-                    <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                <div className={`flex items-center gap-3 p-4 rounded-xl ${isDark ? "bg-gray-900/50 text-gray-400" : "bg-gray-50 text-gray-500"}`}>
+                    <div className="w-5 h-5 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
                     {locale.analyzing}
                 </div>
             )}
 
             {error && (
                 <div
-                    className={`p-4 rounded-lg ${
-                        isDark ? "bg-red-900/20 text-red-200" : "bg-red-50 text-red-700"
+                    className={`p-4 rounded-xl ${
+                        isDark ? "bg-red-500/10 text-red-300" : "bg-red-50 text-red-600"
                     }`}
                 >
                     {error}
                 </div>
             )}
 
-            {analysis && !loading && (
+            {analysis && !loading && analysis.type === "settlement" && (
+                <div className="space-y-4">
+                    {/* Optimized Payment List */}
+                    <div className="space-y-2">
+                        {analysis.analysis.payments.map((payment, index) => (
+                            <div
+                                key={index}
+                                className={`p-4 rounded-lg flex items-center justify-between ${
+                                    isDark ? "bg-purple-900/30" : "bg-purple-50"
+                                }`}
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div
+                                        className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm ${
+                                            isDark ? "bg-purple-600 text-white" : "bg-purple-500 text-white"
+                                        }`}
+                                    >
+                                        {payment.from.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div className={isDark ? "text-gray-200" : "text-gray-700"}>
+                                        <span className="font-medium">{payment.from}</span>
+                                        <span className="mx-2">→</span>
+                                        <span className="font-medium">{payment.to}</span>
+                                    </div>
+                                </div>
+                                <span
+                                    className={`font-bold px-3 py-1 rounded ${
+                                        isDark ? "bg-purple-800 text-purple-200" : "bg-purple-200 text-purple-800"
+                                    }`}
+                                >
+                                    ${payment.amount.toFixed(2)}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Summary */}
+                    <div
+                        className={`text-sm text-center ${isDark ? "text-gray-400" : "text-gray-500"}`}
+                    >
+                        {analysis.analysis.totalTransactions} {locale.transactions || "transactions"}
+                        {analysis.analysis.savings && ` · ${analysis.analysis.savings}`}
+                    </div>
+                </div>
+            )}
+
+            {analysis && !loading && analysis.type === "general" && (
                 <div className="space-y-4">
                     {/* Summary */}
                     <div
@@ -190,13 +257,13 @@ export function AiAnalysis({ state, isDark, locale }: AiAnalysisProps): React.Re
                         }`}
                     >
                         <p className={`font-medium ${isDark ? "text-gray-200" : "text-gray-800"}`}>
-                            {analysis.summary}
+                            {analysis.analysis.summary}
                         </p>
                     </div>
 
                     {/* Points */}
                     <div className="space-y-2">
-                        {analysis.points.map((point, index) => {
+                        {analysis.analysis.points.map((point, index) => {
                             const style = pointTypeStyles[point.type] || pointTypeStyles.observation;
                             return (
                                 <div
@@ -216,7 +283,7 @@ export function AiAnalysis({ state, isDark, locale }: AiAnalysisProps): React.Re
                     </div>
 
                     {/* Recommendation */}
-                    {analysis.recommendation && (
+                    {analysis.analysis.recommendation && (
                         <div
                             className={`p-4 rounded-lg border-2 border-dashed ${
                                 isDark
@@ -226,7 +293,7 @@ export function AiAnalysis({ state, isDark, locale }: AiAnalysisProps): React.Re
                         >
                             <p className="font-medium flex items-center gap-2">
                                 <span>🎯</span>
-                                {analysis.recommendation}
+                                {analysis.analysis.recommendation}
                             </p>
                         </div>
                     )}

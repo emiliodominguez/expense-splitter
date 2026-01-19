@@ -19,7 +19,7 @@ interface AnalysisRequest {
 }
 
 /**
- * Schema for structured AI analysis response.
+ * Schema for structured AI analysis response (patterns and insights).
  */
 const analysisSchema = z.object({
     summary: z.string().describe("A brief 1-2 sentence summary of the analysis"),
@@ -31,6 +31,21 @@ const analysisSchema = z.object({
         })
     ).describe("List of key points from the analysis"),
     recommendation: z.string().optional().describe("Main recommended action, if applicable"),
+});
+
+/**
+ * Schema for optimized settlement payments - returns just a list of payments.
+ */
+const settlementSchema = z.object({
+    payments: z.array(
+        z.object({
+            from: z.string().describe("Person who pays"),
+            to: z.string().describe("Person who receives"),
+            amount: z.number().describe("Amount to pay"),
+        })
+    ).describe("Optimized list of payments to settle all debts"),
+    totalTransactions: z.number().describe("Total number of transactions"),
+    savings: z.string().optional().describe("Brief note about optimization, if applicable"),
 });
 
 /**
@@ -66,8 +81,7 @@ function buildPrompt(state: State, type: AnalysisType, language: string): string
 
     const prompts: Record<AnalysisType, string> = {
         settlement: `
-${langContext}
-Analyze this expense splitting situation and suggest the optimal settlement strategy.
+Analyze this expense splitting scenario and compute the OPTIMIZED list of payments needed to settle all debts.
 
 Expenses:
 ${expensesSummary}
@@ -75,11 +89,13 @@ ${expensesSummary}
 Groups defined:
 ${groupsSummary}
 
-Current debts:
-${debtsSummary}
+IMPORTANT: Calculate the minimum number of transactions needed to settle all debts.
+- First compute each person's net balance (total paid minus their fair share).
+- Then optimize the payment flow to minimize the number of transactions.
+- Use chain payments where possible (if A owes B and B owes C, consolidate).
+- Round amounts to 2 decimal places.
 
-Provide brief, actionable advice on how to settle these debts efficiently.
-Consider if there are simpler ways to settle (e.g., chain payments where A pays B, B pays C instead of A paying both).
+Return ONLY the optimized payment list - who pays whom and how much.
         `.trim(),
 
         patterns: `
@@ -144,14 +160,22 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
         const prompt = buildPrompt(state, analysisType, language);
 
-        // Use Vercel AI SDK with Google Gemini for structured output
-        const { object } = await generateObject({
-            model: google("gemini-2.5-flash"),
-            schema: analysisSchema,
-            prompt,
-        });
-
-        return NextResponse.json({ analysis: object });
+        // Use different schemas based on analysis type
+        if (analysisType === "settlement") {
+            const { object } = await generateObject({
+                model: google("gemini-2.5-flash"),
+                schema: settlementSchema,
+                prompt,
+            });
+            return NextResponse.json({ analysis: object, type: "settlement" });
+        } else {
+            const { object } = await generateObject({
+                model: google("gemini-2.5-flash"),
+                schema: analysisSchema,
+                prompt,
+            });
+            return NextResponse.json({ analysis: object, type: "general" });
+        }
     } catch (error) {
         console.error("Analysis API error:", error);
         return NextResponse.json(

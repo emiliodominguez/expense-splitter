@@ -46,6 +46,8 @@ export const translations = {
         groupNamePlaceholder: "Ej: Comida vegana, Kayak",
         participants: "Participantes",
         selectParticipants: "Seleccionar participantes",
+        addParticipantPlaceholder: "Agregar participante...",
+        suggestedParticipants: "Agregar rápido:",
         noGroups: "Sin grupos definidos",
         noGroupsDescription: "Los gastos se dividirán entre todos",
         everyoneShared: "Compartido (todos)",
@@ -68,12 +70,13 @@ export const translations = {
 
         // AI Analysis
         aiAnalysis: "Análisis con IA",
-        suggestSettlement: "Sugerir liquidación",
+        suggestSettlement: "Optimizar pagos",
         analyzePatterns: "Analizar patrones",
         getInsights: "Obtener consejos",
         analyzing: "Analizando...",
         analysisError: "Error al analizar. Verifica tu API key.",
         noDataToAnalyze: "Agrega gastos para analizar",
+        transactions: "transacciones",
     },
     en: {
         // Core
@@ -118,6 +121,8 @@ export const translations = {
         groupNamePlaceholder: "E.g.: Vegan food, Kayaking",
         participants: "Participants",
         selectParticipants: "Select participants",
+        addParticipantPlaceholder: "Add participant...",
+        suggestedParticipants: "Quick add:",
         noGroups: "No groups defined",
         noGroupsDescription: "Expenses will be split among everyone",
         everyoneShared: "Shared (everyone)",
@@ -140,12 +145,13 @@ export const translations = {
 
         // AI Analysis
         aiAnalysis: "AI Analysis",
-        suggestSettlement: "Suggest settlement",
+        suggestSettlement: "Optimize payments",
         analyzePatterns: "Analyze patterns",
         getInsights: "Get insights",
         analyzing: "Analyzing...",
         analysisError: "Analysis failed. Check your API key.",
         noDataToAnalyze: "Add expenses to analyze",
+        transactions: "transactions",
     },
 };
 
