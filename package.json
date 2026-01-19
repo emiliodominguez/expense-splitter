@@ -9,9 +9,12 @@
         "lint": "next lint"
     },
     "dependencies": {
+        "@ai-sdk/google": "^3.0.10",
+        "ai": "^6.0.39",
         "next": "16.1.1",
         "react": "19.2.3",
-        "react-dom": "19.2.3"
+        "react-dom": "19.2.3",
+        "zod": "^4.3.5"
     },
     "devDependencies": {
         "@tailwindcss/postcss": "^4.1.18",
