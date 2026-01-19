@@ -146,7 +146,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
         // Use Vercel AI SDK with Google Gemini for structured output
         const { object } = await generateObject({
-            model: google("gemini-2.0-flash"),
+            model: google("gemini-2.5-flash"),
             schema: analysisSchema,
             prompt,
         });
